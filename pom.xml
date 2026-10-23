@@ -55,11 +55,26 @@
             </resource>
         </resources>
         <plugins>
+            <!-- Standard Desktop JAR with main.Main entry point -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>main.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <!-- Spring Boot Web Repackage with separate classifier -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>web.SportGridWebApplication</mainClass>
+                    <classifier>web</classifier>
                 </configuration>
             </plugin>
         </plugins>

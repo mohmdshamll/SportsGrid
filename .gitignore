@@ -12,3 +12,13 @@ frontend/dist/
 *.iml
 .DS_Store
 .vscode/
+
+# packaging and distribution outputs
+dist/
+package/
+*.app/
+*.dmg
+*.pkg
+*.msi
+*.exe
+

@@ -38,6 +38,36 @@ You can also run the full test suite using the included Maven Wrapper:
 ./mvnw test
 ```
 
+### 4. Native Desktop Packaging (macOS & Windows)
+
+#### macOS (.app Bundle)
+You can package SportGrid as a standalone native macOS application bundle (`SportGrid.app`):
+
+```bash
+./package-macos.sh
+```
+
+- **Output**: Created in `dist/SportGrid.app`.
+- **How to launch**:
+  - **From Finder**: Double-click `dist/SportGrid.app` (or drag it into `/Applications`).
+  - **From Terminal**: `open dist/SportGrid.app`
+- **Bundled Java Runtime**: Uses `jpackage` to bundle a self-contained runtime directly inside `SportGrid.app/Contents/runtime/`. End-users do not need to install Java.
+- **Database Configuration**:
+  - The app looks for `db.properties` in the current directory, in `~/.sportgrid/db.properties`, or via environment variables (`SPORTGRID_DB_URL`, `SPORTGRID_DB_USER`, `SPORTGRID_DB_PASSWORD`).
+  - If MySQL is offline, the app safely launches the GUI and informs the user on the login screen.
+- **Application Icon**: Pre-configured with the custom SportGrid Apple ICNS icon (`resources/macos/SportGrid.icns`).
+
+#### Windows (.exe Bundle)
+On a Windows machine with JDK 17+ installed, run:
+
+```bat
+package-windows.bat
+```
+
+- **Output**: Generates `dist\SportGrid\SportGrid.exe` with a bundled Windows runtime.
+*(Note: Windows packaging must be run on a Windows host machine).*
+
+
 ---
 
 ## System Requirements & Setup

@@ -30,6 +30,21 @@ public final class DBConnection {
 
         java.io.File file = new java.io.File("db.properties");
         if (!file.exists()) {
+            String prop = System.getProperty("sportgrid.db.properties");
+            if (prop != null && !prop.isBlank()) {
+                file = new java.io.File(prop.trim());
+            }
+        }
+        if (!file.exists()) {
+            String env = System.getenv("SPORTGRID_DB_PROPERTIES");
+            if (env != null && !env.isBlank()) {
+                file = new java.io.File(env.trim());
+            }
+        }
+        if (!file.exists()) {
+            file = new java.io.File(System.getProperty("user.home"), ".sportgrid/db.properties");
+        }
+        if (!file.exists()) {
             file = new java.io.File("extracted/-SportGrid-web-version/db.properties");
         }
 
@@ -43,6 +58,14 @@ public final class DBConnection {
         } else {
             System.err.println("[DBConnection] db.properties not found, using defaults (user root, empty password).");
         }
+
+        // Allow environment variables to override or provide database credentials
+        String envUrl = System.getenv("SPORTGRID_DB_URL");
+        if (envUrl != null && !envUrl.isBlank()) p.setProperty("db.url", envUrl.trim());
+        String envUser = System.getenv("SPORTGRID_DB_USER");
+        if (envUser != null && !envUser.isBlank()) p.setProperty("db.user", envUser.trim());
+        String envPass = System.getenv("SPORTGRID_DB_PASSWORD");
+        if (envPass != null) p.setProperty("db.password", envPass);
         return p;
     }
 
