@@ -1,0 +1,14 @@
+# personal config (contains a password)
+db.properties
+
+# build output and IDE files
+out/
+target/
+bin/
+frontend/node_modules/
+frontend/dist/
+*.class
+.idea/
+*.iml
+.DS_Store
+.vscode/
