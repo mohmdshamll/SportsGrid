@@ -3,7 +3,7 @@ REM ============================================================================
 REM SportGrid Windows Packaging Script
 REM Builds the Java Swing desktop application and packages it into a native
 REM Windows application folder with SportGrid.exe using jpackage.
-REM MUST BE RUN ON A WINDOWS MACHINE WITH JDK 17+ (JDK 21 LTS recommended).
+REM MUST BE RUN ON A WINDOWS MACHINE WITH JDK 21+ (JDK 21 LTS recommended).
 REM ==============================================================================
 
 setlocal enabledelayedexpansion
@@ -23,24 +23,34 @@ if %ERRORLEVEL% neq 0 (
 )
 
 if not defined JPACKAGE (
+    echo.
     echo ERROR: 'jpackage' tool not found.
-    echo Please install JDK 17+ and ensure JAVA_HOME is set and added to PATH.
+    echo Please install JDK 21 or higher (https://adoptium.net/temurin/releases/?version=21) and ensure JAVA_HOME is set.
+    pause
     exit /b 1
 )
 
 echo Using jpackage: %JPACKAGE%
 
-REM 2. Build desktop JAR using Maven Wrapper
-echo Building SportGrid desktop artifacts with Maven...
-call mvnw.cmd clean package -DskipTests
-if %ERRORLEVEL% neq 0 (
-    echo ERROR: Maven build failed.
-    exit /b 1
-)
-
+REM 2. Check or build desktop JAR using Maven Wrapper
 set "DESKTOP_JAR=target\sportgrid-1.0.0.jar"
 if not exist "%DESKTOP_JAR%" (
+    echo Building SportGrid desktop artifacts with Maven...
+    call mvnw.cmd package -DskipTests
+    if !ERRORLEVEL! neq 0 (
+        echo.
+        echo ERROR: Maven build failed.
+        pause
+        exit /b 1
+    )
+) else (
+    echo Using desktop JAR: %DESKTOP_JAR%
+)
+
+if not exist "%DESKTOP_JAR%" (
+    echo.
     echo ERROR: Expected desktop jar '%DESKTOP_JAR%' was not found.
+    pause
     exit /b 1
 )
 
@@ -50,7 +60,9 @@ if not exist "%MYSQL_DRIVER%" (
     set "MYSQL_DRIVER=lib\mysql-connector-j-26.10.0.jar"
 )
 if not exist "%MYSQL_DRIVER%" (
+    echo.
     echo ERROR: MySQL JDBC connector jar not found in lib\.
+    pause
     exit /b 1
 )
 echo Using MySQL Driver: %MYSQL_DRIVER%
@@ -83,8 +95,12 @@ if exist "%OUTPUT_DIR%\SportGrid\SportGrid.exe" (
     echo =================================================================
     echo SUCCESS: Windows application bundle created successfully!
     echo Location: %OUTPUT_DIR%\SportGrid\SportGrid.exe
+    echo You can distribute the '%OUTPUT_DIR%\SportGrid' folder to any Windows user.
     echo =================================================================
+    pause
 ) else (
+    echo.
     echo ERROR: Failed to generate %OUTPUT_DIR%\SportGrid\SportGrid.exe.
+    pause
     exit /b 1
 )
